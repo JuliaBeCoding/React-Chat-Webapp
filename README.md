@@ -1,5 +1,7 @@
 Uppgift: React chat webapp med inloggning 
+
 Deadline: 22/8 kl 23:59 
+
 Typ: Individuell inlämningsuppgift 
 Betyg: IG/G/VG 
 Inlämning: Versionshantera projektet och skicka GitHub repository länken till mig via 
