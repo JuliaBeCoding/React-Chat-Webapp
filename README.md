@@ -3,16 +3,22 @@ Uppgift: React chat webapp med inloggning
 Deadline: 22/8 kl 23:59 
 
 Typ: Individuell inlämningsuppgift 
-Betyg: IG/G/VG 
+
+Betyg: IG/G/VG
+
 Inlämning: Versionshantera projektet och skicka GitHub repository länken till mig via 
 LearnPoint – glöm inte bifoga ett dokument så den blir igenkänd som inlämning. 
+
 Presentation: Utförs helst IRL men går också via Discord. Kom förberedda, demo + 
 koddiskussion. TeamViewer kan vi också använda så jag kan ta kontroll.  
+
 Testa Chatify API 
 Testa anrop mot Chatify APIet så ni förstår hur det fungerar. Ni testar APIets olika anrop 
 med programmet Insomnia/Postman för att bilda er en uppfattning.  
+
 Det finns en Swagger (dokumentation): https://chatify-api.up.railway.app/  
 Skapa anrop som: 
+
 • Hämta CSRF token via fetch/axios, PATCH: https://chatify-api.up.railway.app/csrf  
 o Se snippet här: https://pastebin.com/raw/9fwJtvS5  
 •    Registrera användare, POST: https://chatify-api.up.railway.app/auth/register  
