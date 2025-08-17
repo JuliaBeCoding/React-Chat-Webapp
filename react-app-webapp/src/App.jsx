@@ -1,11 +1,14 @@
-import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { useState } from "react";
 import { getUserData } from "./utils/auth";
-import Login from './containers/LoginContainer';
+import Login from './containers/LoginContainer'
 import Register from './containers/RegisterContainer';
 import Chat from './containers/ChatContainer';
+import './app.css';
 
 function App() {
-  const userData = getUserData();
+  const [userData, setUserData] = useState(getUserData());
+
   const isAuthenticated = userData && userData.token;
 
   return (

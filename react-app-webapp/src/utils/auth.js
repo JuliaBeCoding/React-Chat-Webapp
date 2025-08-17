@@ -1,4 +1,4 @@
-// Token hantering.
+// Autentisering.
 
 import { jwtDecode } from "jwt-decode";
 
@@ -37,8 +37,6 @@ export const saveUserData = (token) => {
     const userInfo = getUserInfoFromToken(token);
 
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
-
-    console.log('User data saved:', { token, userInfo });
   } catch (error) {
     console.error('Error saving user data.', error);
   };
@@ -81,8 +79,6 @@ export const getUserInfoFromToken = (token) => {
     if (!decoded) {
       return null;
     }
-
-    console.log('Decoded token.', decoded);
 
     return {
       id: decoded.id,

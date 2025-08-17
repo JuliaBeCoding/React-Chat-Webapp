@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiService from "../services/api";
 import { saveUserData } from "../utils/auth";
+import LoginComponent from "../components/LoginComponent";
 
 const Login = () => {
 
@@ -20,6 +21,10 @@ const Login = () => {
     });
   };
 
+  const navigateToRegister = () => {
+    navigate('/register');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -32,7 +37,7 @@ const Login = () => {
       );
 
       saveUserData(response.token);
-      navigate('/chat');
+      window.location.href = '/chat';
     } catch (error) {
       setError(error.message)
     } finally {
@@ -41,43 +46,14 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Logga in</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Användarnamn:</label>
-          <input
-            type="text"
-            name="username"
-            value={credentials.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div>
-          <label>Lösenord:</label>
-          <input
-            type="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {error && <div className="error">{error}</div>}
-        
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Loggar in...' : 'Logga in'}
-        </button>
-      </form>
-      
-      <p>
-        Inget konto än? 
-        <button onClick={() => navigate('/register')}>Registrera dig här</button>
-      </p>
-    </div>
+    <LoginComponent
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+      navigateToRegister={navigateToRegister}
+      credentials={credentials}
+      error={error}
+      isLoading={isLoading}
+    />
   )
 };
 

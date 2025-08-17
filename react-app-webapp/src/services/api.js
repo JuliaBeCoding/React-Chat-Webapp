@@ -2,7 +2,7 @@
 
 const API_BASE_URL = 'https://chatify-api.up.railway.app';
 
-// Objekt med metoder.
+// Objekt med HTTP-metoder.
 const apiService = {
   csrfToken: null,
 
@@ -16,6 +16,7 @@ const apiService = {
         },
       });
 
+      // Fånga serverfel.
       if (!response.ok) {
         throw new Error('Failed to get CSRF token');
       }
@@ -41,13 +42,13 @@ const apiService = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': this.csrfToken,
         },
         body: JSON.stringify({
           username,
           password,
           email,
-          avatar
+          avatar,
+          csrfToken: this.csrfToken
         }),
       });
 
@@ -65,31 +66,36 @@ const apiService = {
   },
 
   // Logga in användare.
-  async loginUser(username, password) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/auth/token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username,
-          password
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
-      return data;
-    } catch (error) {
-      console.error('Error logging in:', error);
-      throw error;
+async loginUser(username, password) {
+  try {
+    if (!this.csrfToken) {
+      await this.getCsrfToken();
     }
-  },
+
+    const response = await fetch(`${API_BASE_URL}/auth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        csrfToken: this.csrfToken
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
+},
 
   // Hämta meddelanden.
   async getMessages(conversationId = null) {
@@ -108,7 +114,6 @@ const apiService = {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       });
 
@@ -137,7 +142,7 @@ const apiService = {
         await this.getCsrfToken();
       }
 
-      const body = { text };
+      const body = { text, csrfToken: this.csrfToken };
       if (conversationId) {
         body.conversationId = conversationId;
       }
@@ -146,7 +151,6 @@ const apiService = {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'X-CSRF-Token': this.csrfToken,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
@@ -176,7 +180,6 @@ const apiService = {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       });
 

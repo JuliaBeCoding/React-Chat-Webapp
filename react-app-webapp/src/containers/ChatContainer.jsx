@@ -1,15 +1,44 @@
 import { useEffect, useState } from "react";
 import apiService from "../services/api";
 import { getUserData } from "../utils/auth";
-import MessageItem from '../components/MessageItem';
-import MessageForm from '../components/MessageForm';
+import ChatComponent from "../components/ChatComponent";
 
 const Chat = () => {
   
-  const [messages, setMessages] = useState([]);
+  const [realMessages, setRealMessages] = useState([]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const userData = getUserData();
+
+  const [fakeChat] = useState([
+    {
+      id: 'fake-1',
+      text: "Tja tja, hur mår du?",
+      avatar: "https://i.pravatar.cc/100?img=14",
+      username: "Johnny",
+      conversationId: null,
+      userId: 'fake-user-id',
+      createdAt: new Date(Date.now() - 3600000).toISOString() // 1 timme sedan
+    },
+    {
+      id: 'fake-2', 
+      text: "Hallå!! Svara då!!",
+      avatar: "https://i.pravatar.cc/100?img=14",
+      username: "Johnny",
+      conversationId: null,
+      userId: 'fake-user-id',
+      createdAt: new Date(Date.now() - 1800000).toISOString() // 30 min sedan
+    },
+    {
+      id: 'fake-3',
+      text: "Sover du eller?! 😴",
+      avatar: "https://i.pravatar.cc/100?img=14", 
+      username: "Johnny",
+      conversationId: null,
+      userId: 'fake-user-id',
+      createdAt: new Date(Date.now() - 900000).toISOString() // 15 min sedan
+    }
+  ]);
 
   useEffect(() => {
     loadMessages();
@@ -19,7 +48,7 @@ const Chat = () => {
     try {
       setIsLoading(true);
       const data = await apiService.getMessages();
-      setMessages(data);
+      setRealMessages(data);
     } catch (error) {
       setError('Kunde inte ladda meddelanden.');
     } finally {
@@ -30,6 +59,7 @@ const Chat = () => {
   const handleSendMessage = async (text) => {
     try {
       await apiService.createMessage(text);
+      setError('');
       loadMessages();
     } catch (error) {
       setError('Kunde inte skicka meddelande.')
@@ -45,6 +75,11 @@ const Chat = () => {
     }
   };
 
+   // Kombinera fejkade och riktiga meddelanden, sortera efter tid
+  const allMessages = [...fakeChat, ...realMessages].sort((a, b) => 
+    new Date(a.createdAt) - new Date(b.createdAt)
+  );
+
   if (isLoading) {
     return (
       <div>Laddar meddelanden...</div>
@@ -52,34 +87,13 @@ const Chat = () => {
   };
 
   return (
-    <div className="chat-container">
-      <SideNav userData={userData} />
-      
-      <div className="chat-main">
-        <div className="chat-header">
-          <h2>Chat</h2>
-          <div className="user-info">
-            <img src={userData?.userInfo?.avatar} alt="Avatar" width="40" height="40" />
-            <span>{userData?.userInfo?.user}</span>
-          </div>
-        </div>
-
-        {error && <div className="error">{error}</div>}
-
-        <div className="messages-container">
-          {messages.map((message) => (
-            <MessageItem
-              key={message.id}
-              message={message}
-              isOwn={message.userId === userData?.userInfo?.id}
-              onDelete={handleDeleteMessage}
-            />
-          ))}
-        </div>
-
-        <MessageForm onSendMessage={handleSendMessage} />
-      </div>
-    </div>
+    <ChatComponent
+      handleSendMessage={handleSendMessage}
+      handleDeleteMessage={handleDeleteMessage}
+      allMessages={allMessages}
+      userData={userData}
+      error={error}
+    />
   );
 };
 

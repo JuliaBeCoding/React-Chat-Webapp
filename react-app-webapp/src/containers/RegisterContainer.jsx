@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiService from "../services/api";
+import RegisterComponent from "../components/RegisterComponent";
 
 const Register = () => {
 
@@ -37,66 +38,29 @@ const Register = () => {
       alert('Registrering lyckades! Du kommer nu att omdirigeras till inloggning.');
       navigate('/login');
     } catch (error) {
-      setError(error.message);
+      if (error.message.includes('Registration failed')) {
+        setError("Användarnamnet eller emailen finns redan.")
+      } else {
+        setError("Något gick fel vid registreringen.")
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const navigateToLogin = () => {
+    navigate('/login');
+  };
+
   return (
-    <div className="register-container">
-      <h2>Registrera dig</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Användarnamn:</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Lösenord:</label>
-          <input
-            type="text"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input 
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Avatar:</label>
-          <input 
-            type="url"
-            name="avatar"
-            value={formData.avatar}
-            onChange={handleChange}
-          />
-        </div>
-
-        {error && <div className="error">{error}</div>}
-
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Registerar...' : 'Registera'}
-        </button>
-      </form>
-
-      <p>Har du redan ett konto?</p>
-      <button onClick={() => navigate('/login')}>Logga in här</button>
-    </div>
+    <RegisterComponent 
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+      navigateToLogin={navigateToLogin}
+      formData={formData}
+      error={error}
+      isLoading={isLoading}
+    />
   );
 };
 
