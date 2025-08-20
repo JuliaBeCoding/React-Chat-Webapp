@@ -33,7 +33,6 @@ const apiService = {
   // Registrera användare.
   async registerUser(username, password, email, avatar) {
     try {
-      // Hämta CSRF token först om vi inte har en
       if (!this.csrfToken) {
         await this.getCsrfToken();
       }
@@ -130,22 +129,18 @@ async loginUser(username, password) {
   },
 
   // Skapa meddelande.
-  async createMessage(text, conversationId = null) {
+  async createMessage(text) {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No token found');
       }
 
-      // Hämta CSRF token om vi inte har en
       if (!this.csrfToken) {
         await this.getCsrfToken();
       }
 
       const body = { text, csrfToken: this.csrfToken };
-      if (conversationId) {
-        body.conversationId = conversationId;
-      }
 
       const response = await fetch(`${API_BASE_URL}/messages`, {
         method: 'POST',

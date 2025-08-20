@@ -43,6 +43,7 @@ const RegisterComponent = ({handleChange, handleSubmit, navigateToLogin, formDat
             name="avatar"
             value={formData.avatar}
             onChange={handleChange}
+            required
           />
         </div>
 

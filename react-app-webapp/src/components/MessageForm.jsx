@@ -2,6 +2,7 @@ import { useState } from "react";
 import DOMPurify from 'dompurify';
 
 const MessageForm = ({onSendMessage}) => {
+  
   const [text, setText] = useState('');
 
   const handleSubmit = (e) => {
